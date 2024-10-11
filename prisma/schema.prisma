@@ -9,29 +9,32 @@ datasource db {
 
 model Post {
   id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  title     String   @db.VarChar(255)
-  content   String?
+  title     String   @db.VarChar(255) @unique
+  content   String?  
   published Boolean  @default(false)
   author    User     @relation(fields: [authorId], references: [id])
   authorId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   @@map("posts")
 }
 
 model Profile {
   id     String  @id @default(uuid())
   bio    String?
-  user   User    @relation(fields: [userId], references: [id])
+  user   User    @relation(fields: [userId], references: [id],onDelete: Cascade)
   userId String  @unique
   @@map("profiles")
 }
 
 model User {
-  id      String   @id @default(uuid())
-  email   String   @unique
-  name    String?
-  posts   Post[]
-  profile Profile?
+  id       String   @default(uuid()) @id
+  name     String   @db.VarChar(255)
+  username String   @unique
+  password String   @db.VarChar(255)
+  posts    Post[] 
+  profile  Profile?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   @@map("users")
 }
