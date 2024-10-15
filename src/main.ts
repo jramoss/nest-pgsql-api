@@ -1,11 +1,13 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { logger } from './common/middleware/logger.middleware';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { RolesGuard } from './auth/roles.guard';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.useGlobalGuards(new RolesGuard(new Reflector()));
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
@@ -26,7 +28,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  //app.use(logger);
+  // app.use(logger);
   await app.listen(3000);
 }
 bootstrap();

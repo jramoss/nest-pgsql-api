@@ -1,4 +1,12 @@
-import { Controller, Get, Post,Body,Patch,Param, Delete} from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { CreatePostIfaceDTo, PostService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
@@ -8,9 +16,9 @@ export class PostController {
   constructor(private readonly postService: PostService) {}
 
   @Post()
-  create(@Body() payload: { title: string;
-    content: string;
-    authorId: string;}) {
+  create(
+    @Body() payload: { title: string; content: string; authorId: string },
+  ) {
     return this.postService.create(payload);
   }
 
@@ -25,7 +33,16 @@ export class PostController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() payload: { title:string , content:string, published: boolean,authorId:string}) {
+  update(
+    @Param('id') id: string,
+    @Body()
+    payload: {
+      title: string;
+      content: string;
+      published: boolean;
+      authorId: string;
+    },
+  ) {
     return this.postService.update(id, payload);
   }
 

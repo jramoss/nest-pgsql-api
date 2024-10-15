@@ -1,11 +1,13 @@
-import {  Body,
+import {
+  Body,
   Controller,
   Get,
   HttpCode,
   HttpStatus,
   Post,
   Request,
-  UseGuards } from '@nestjs/common';
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthGuard } from './auth.guard';
 import { Public } from './decorators/auth.decorador';
@@ -13,6 +15,7 @@ import { Public } from './decorators/auth.decorador';
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
+  
   @Public()
   @HttpCode(HttpStatus.OK)
   @Post('/login')
@@ -22,7 +25,7 @@ export class AuthController {
 
   @UseGuards(AuthGuard)
   @Get('profile')
-  getProfile(@Request() req:any) {
+  getProfile(@Request() req: any) {
     return req.user;
   }
 }

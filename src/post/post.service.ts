@@ -12,21 +12,22 @@ export interface CreatePostIfaceDTo {
   title: string;
   content: string;
   authorId: string;
- 
 }
 @Injectable()
 export class PostService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(data: CreatePostIfaceDTo): Promise<Post> {
-     try {
+    try {
       return await this.prisma.post.create({
         data,
       });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
-          throw new BadRequestException('Titulo ja cadastrado tente outro titulo');
+          throw new BadRequestException(
+            'Titulo ja cadastrado tente outro titulo',
+          );
         }
       }
       if (error instanceof Prisma.PrismaClientValidationError) {
@@ -43,7 +44,7 @@ export class PostService {
     }
     return postExists;
   }
-  
+
   async findAll(params: {
     skip?: number;
     take?: number;
@@ -63,8 +64,10 @@ export class PostService {
     });
   }
 
-  async update(id: string, payload: {title:string,content:string,published: boolean}): Promise<Post>  {
-    
+  async update(
+    id: string,
+    payload: { title: string; content: string; published: boolean },
+  ): Promise<Post> {
     const postExists = await this.prisma.post.findUnique({ where: { id } });
     if (!postExists) {
       throw new BadRequestException('Nenhum registro encontrado');
@@ -73,7 +76,7 @@ export class PostService {
       where: {
         id,
       },
-      data:payload
+      data: payload,
     });
     return postUpdated;
   }
@@ -105,20 +108,23 @@ export class PostService {
     return this.prisma.post.findMany({ where, include: { author: true } });
   }
 
-  async publishPost(id:string){
+  async publishPost(id: string) {
     const postExists = await this.prisma.post.findUnique({ where: { id } });
     if (!postExists) {
       throw new BadRequestException('Nehum registro nao encontrado');
     }
-    const NewPost = await this.prisma.post.update({ where: { id }, data: { published: true } })
+    const NewPost = await this.prisma.post.update({
+      where: { id },
+      data: { published: true },
+    });
 
     return NewPost;
   }
 
-  async getPublishedPosts(){
-    const PublishedPosts = await this.prisma.post.findMany({ where: {  published: true } })
+  async getPublishedPosts() {
+    const PublishedPosts = await this.prisma.post.findMany({
+      where: { published: true },
+    });
     return PublishedPosts;
   }
-
-
 }

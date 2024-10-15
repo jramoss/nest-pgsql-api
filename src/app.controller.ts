@@ -11,8 +11,8 @@ import { AppService } from './app.service';
 import { PostService } from './post/post.service';
 import { UserService } from './user/user.service';
 import { Post as PostModel, Role } from '@prisma/client';
-import { Roles } from './auth/decorators/roles.decorator';
 import { Role as _role } from './auth/enums/função.enum';
+import { Public } from './auth/decorators/auth.decorador';
 
 @Controller('/')
 export class AppController {
@@ -32,8 +32,7 @@ export class AppController {
 
   @Get('feed')
   async getPublishedPosts(): Promise<PostModel[]> {
-    return this.postService.getPublishedPosts()
-    
+    return this.postService.getPublishedPosts();
   }
 
   @Get('filtered-posts/:searchString')
@@ -68,13 +67,13 @@ export class AppController {
 
   @Delete('post/:id')
   async deletePost(@Param('id') id: string): Promise<PostModel> {
-    return this.postService.remove(id)
+    return this.postService.remove(id);
   }
-
+  @Public()
   @Post('role')
   async role(
-    @Body() payload:{name: string,description:string,userId:string}): 
-    Promise<Role> {
-    return this.appService.createRole(payload)
+    @Body() payload: { name: string; description: string; userId: string },
+  ): Promise<Role> {
+    return this.appService.createRole(payload);
   }
 }

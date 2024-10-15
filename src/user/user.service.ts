@@ -33,8 +33,8 @@ export class UserService {
         username,
         password: hashPassword,
         profile: {
-          create: {bio: name}
-        }
+          create: { bio: name },
+        },
       },
     });
     return user;
@@ -42,7 +42,7 @@ export class UserService {
 
   async findAll(): Promise<User[]> {
     const userExists = await this.prisma.user.findMany({
-      include: { posts: true, roles: true, profile: true},
+      include: { posts: true, roles: true, profile: true },
     });
     if (!userExists) {
       throw new BadRequestException(`nehum registro encontrado com id`);
@@ -51,18 +51,21 @@ export class UserService {
   }
 
   async findOne(id: string): Promise<User> {
-    const userExists = await this.prisma.user.findUnique({ where: { id },include:{profile:true,posts: true} });
+    const userExists = await this.prisma.user.findUnique({
+      where: { id },
+      include: { profile: true, posts: true },
+    });
     if (!userExists) {
       throw new BadRequestException(`nehum registro encontrado com id ${id}`);
     }
     return userExists;
   }
 
-  async update(id: string, payload: UpdateUserDto ): Promise<User | undefined> {
+  async update(id: string, payload: UpdateUserDto): Promise<User | undefined> {
     const { name, username, password } = payload;
     const salt = 10;
     const hashPassword = await bcrypt.hash(String(password), salt);
-    const userExists   = await this.prisma.user.findUnique({
+    const userExists = await this.prisma.user.findUnique({
       where: {
         id,
       },
@@ -81,8 +84,8 @@ export class UserService {
         data: {
           name,
           username,
-          password: hashPassword
-        }
+          password: hashPassword,
+        },
       });
       return user;
     } catch (error) {
@@ -101,18 +104,19 @@ export class UserService {
       },
     });
     if (!userExists) {
-      throw new BadRequestException('Nenhum registro encontrado')
+      throw new BadRequestException('Nenhum registro encontrado');
     }
-    await this.prisma.user.delete({where:{id}})
-    throw new HttpException('Usuário deletado com successo',HttpStatus.NO_CONTENT)
-
+    await this.prisma.user.delete({ where: { id } });
+    throw new HttpException(
+      'Usuário deletado com successo',
+      HttpStatus.NO_CONTENT,
+    );
   }
 
   async findByUsername(username: string) {
-    return await this.prisma.user.findUnique({
-      where: {
-        username,
-      },include:{roles: true},
-    });
+    return await this.prisma.user.findFirstOrThrow({
+      where: { username },
+      include: { roles: { select: { name: true } } },
+    })
   }
 }
