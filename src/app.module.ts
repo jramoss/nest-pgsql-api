@@ -8,10 +8,16 @@ import { PostService } from './post/post.service';
 import { AuthService } from './auth/auth.service';
 import { AuthModule } from './auth/auth.module';
 import { PostModule } from './post/post.module';
+import { APP_GUARD } from '@nestjs/core';
+import { RolesGuard } from './auth/roles.guard';
+import { RoleModule } from './role/role.module';
 
 @Module({
-  imports: [UserModule, AuthModule,PostModule],
+  imports: [UserModule, AuthModule,PostModule, RoleModule],
   controllers: [AppController],
-  providers: [AppService, PrismaService, UserService, PostService, AuthService],
+  providers: [ {
+    provide: APP_GUARD,
+    useClass: RolesGuard,
+  },AppService, PrismaService, UserService, PostService, AuthService],
 })
 export class AppModule {}

@@ -33,8 +33,17 @@ model User {
   username String   @unique
   password String   @db.VarChar(255)
   posts    Post[] 
+  roles    Role[]
   profile  Profile?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   @@map("users")
+}
+
+model Role {
+  id String @default(uuid()) @id
+  name String
+  description String
+  user   User    @relation(fields: [userId], references: [id])
+  userId String  @unique
 }

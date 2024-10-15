@@ -1,8 +1,8 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UserService } from 'src/user/user.service';
-import * as bcrypt from 'bcrypt';
-import { User } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
+import * as bcrypt from 'bcrypt';
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -17,7 +17,10 @@ export class AuthService {
     if (!isMatch) {
       throw new UnauthorizedException();
     }else{
-      const payload = { sub: user?.id, username: user?.username };
+      const payload = { 
+        sub: user?.id, 
+        username: user?.username, 
+      };
       return {
         access_token: await this.jwtService.signAsync(payload),
       };

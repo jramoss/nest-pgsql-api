@@ -42,7 +42,7 @@ export class UserService {
 
   async findAll(): Promise<User[]> {
     const userExists = await this.prisma.user.findMany({
-      include: { posts: true },
+      include: { posts: true, roles: true, profile: true},
     });
     if (!userExists) {
       throw new BadRequestException(`nehum registro encontrado com id`);
@@ -109,10 +109,10 @@ export class UserService {
   }
 
   async findByUsername(username: string) {
-    return await this.prisma.user.findFirst({
+    return await this.prisma.user.findUnique({
       where: {
         username,
-      },
+      },include:{roles: true},
     });
   }
 }

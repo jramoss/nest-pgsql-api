@@ -10,7 +10,9 @@ import {
 import { AppService } from './app.service';
 import { PostService } from './post/post.service';
 import { UserService } from './user/user.service';
-import { Post as PostModel, User } from '@prisma/client';
+import { Post as PostModel, Role } from '@prisma/client';
+import { Roles } from './auth/decorators/roles.decorator';
+import { Role as _role } from './auth/enums/função.enum';
 
 @Controller('/')
 export class AppController {
@@ -67,5 +69,12 @@ export class AppController {
   @Delete('post/:id')
   async deletePost(@Param('id') id: string): Promise<PostModel> {
     return this.postService.remove(id)
+  }
+
+  @Post('role')
+  async role(
+    @Body() payload:{name: string,description:string,userId:string}): 
+    Promise<Role> {
+    return this.appService.createRole(payload)
   }
 }
