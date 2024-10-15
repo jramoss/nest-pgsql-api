@@ -47,13 +47,18 @@ export class UserService {
     if (!userExists) {
       throw new BadRequestException(`nehum registro encontrado com id`);
     }
-    return userExists;
+    const users = {
+      ...userExists,
+              
+    }
+
+    return users;
   }
 
   async findOne(id: string): Promise<User> {
     const userExists = await this.prisma.user.findUnique({
       where: { id },
-      include: { profile: true, posts: true },
+      include: { profile: true, posts: true,roles:true },
     });
     if (!userExists) {
       throw new BadRequestException(`nehum registro encontrado com id ${id}`);
@@ -114,9 +119,19 @@ export class UserService {
   }
 
   async findByUsername(username: string) {
-    return await this.prisma.user.findFirstOrThrow({
-      where: { username },
-      include: { roles: { select: { name: true } } },
+    const userExists = await this.prisma.user.findFirst({
+      where:{username},
+      include:{
+        roles:{
+          select:{ 
+            name:true
+          }
+        }
+      }
     })
+    if (!userExists) {
+      throw new BadRequestException(`Nenhum Usuario encontrador pelo Username: ${username}`)
+    }
+    return userExists
   }
 }
