@@ -28,6 +28,10 @@ export class CreateUserDto {
   @MinLength(5, { message: 'username deve ter no minimo de 5 caracteres' })
   password: string;
 
+  salt: string;
+  status: boolean;
+  confirmationToken: string;
+  recoverToken: string;
   posts?: Post;
   profile?: Profile;
 }

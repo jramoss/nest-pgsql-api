@@ -6,8 +6,8 @@ import {
   Patch,
   Param,
   Delete,
-  UseGuards, 
-  Request
+  UseGuards,
+  Request,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -19,19 +19,18 @@ import { Role } from 'src/auth/enums/função.enum';
 import { Public } from 'src/auth/decorators/auth.decorador';
 import { Authinterface } from 'src/auth/auth.interface';
 
-
 @ApiTags('Users')
 @Controller('users')
 @UseGuards(RolesGuard)
 export class UserController {
   constructor(private readonly userService: UserService) {}
-  
+
   @Public()
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }
-  
+
   @Roles(Role.User)
   @Get()
   findAll() {
